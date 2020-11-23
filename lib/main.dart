@@ -1,3 +1,5 @@
+import 'package:chat_app_flutter/screens/chat_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import './screens/auth_screen.dart';
@@ -11,7 +13,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: AuthScreen.id,
+      home: StreamBuilder(
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ChatScreen();
+          } else {
+            return AuthScreen();
+          }
+        },
+        stream: FirebaseAuth.instance.onAuthStateChanged,
+      ),
       routes: {
         AuthScreen.id: (context) => AuthScreen(),
       },
