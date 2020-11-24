@@ -1,3 +1,5 @@
+import 'package:chat_app_flutter/widgets/messages.dart';
+import 'package:chat_app_flutter/widgets/new_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -36,32 +38,19 @@ class ChatScreen extends StatelessWidget {
           )
         ],
       ),
-      body: StreamBuilder(
-        stream: Firestore.instance
-            .collection('chats/fmiLDp2kp75n0mPi2WTU/messages')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          final documents = snapshot.data.documents;
-          return ListView.builder(
-            itemBuilder: (context, index) => Container(
-              padding: EdgeInsets.all(10),
-              child: Text(documents[index]['text'].toString()),
-            ),
-            itemCount: documents.length,
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Firestore.instance
-              .collection('chats/fmiLDp2kp75n0mPi2WTU/messages')
-              .add({'text': 'Hello there'});
-        },
-        child: Icon(Icons.add),
+      body: Column(
+        children: [
+          Expanded(child: Messages()),
+          Divider(
+            thickness: 2,
+            color: Theme.of(context).primaryColor,
+          ),
+          NewMessage(),
+        ],
       ),
     );
   }
 }
+// Firestore.instance
+//     .collection('chats/fmiLDp2kp75n0mPi2WTU/messages')
+// .add({'text': 'Hello there'});
