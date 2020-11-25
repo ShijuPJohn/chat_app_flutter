@@ -12,7 +12,7 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
-  bool isLogin = false;
+  bool isLogin = true;
   final _formKey = GlobalKey<FormState>();
   String _userEmail = '';
   String _userName = '';
@@ -44,6 +44,27 @@ class _AuthFormState extends State<AuthForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (!isLogin)
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                      ),
+                      SizedBox(width: 20),
+                      FlatButton.icon(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.image,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          label: Text(
+                            'Select an image',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          )),
+                    ],
+                  ),
                 TextFormField(
                   key: ValueKey('email'),
                   validator: (value) {
@@ -102,9 +123,10 @@ class _AuthFormState extends State<AuthForm> {
                     child: isLogin ? Text('Login') : Text('Sign Up'),
                     onPressed: _trySubmit,
                   ),
-                if (widget.isLoading) CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
+                if (widget.isLoading)
+                  CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
                 FlatButton(
                   textColor: Theme.of(context).primaryColor,
                   child: isLogin

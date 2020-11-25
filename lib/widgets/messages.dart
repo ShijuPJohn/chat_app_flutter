@@ -29,9 +29,11 @@ class Messages extends StatelessWidget {
               itemBuilder: (context, index) => Container(
                   padding: EdgeInsets.all(10),
                   child: MessageBubble(
+                      key: ValueKey(chatDocs[index].documentID),
+                      userName: chatDocs[index]['username'],
                       message: chatDocs[index]['text'].toString(),
-                      isOwnText:
-                          chatDocs[index]['userId'] == futureSnapshot.data.uid)),
+                      isOwnText: chatDocs[index]['userId'] ==
+                          futureSnapshot.data.uid)),
               itemCount: chatDocs.length,
             );
           },
