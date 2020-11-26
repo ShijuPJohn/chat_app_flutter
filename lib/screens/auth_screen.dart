@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,7 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _isLoading = false;
 
   Future<void> submitAuthForm(String email, String password, String username,
-      bool isLogin, BuildContext ctx) async {
+      bool isLogin, BuildContext ctx, File imageFile) async {
     print('$email, $password, $username, $isLogin');
     AuthResult _authResult;
     try {
@@ -38,10 +41,22 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
         _authResult = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_images')
+            .child(_authResult.user.uid + '.jpg');
+        await ref.putFile(imageFile).onComplete;
+
+        final imageFileUrl = await ref.getDownloadURL();
+
         await Firestore.instance
             .collection('users')
             .document(_authResult.user.uid)
-            .setData({'username': username, 'email': email});
+            .setData({
+          'username': username,
+          'email': email,
+          'image_file_url': imageFileUrl,
+        });
         var message = 'Signup Successful';
         Scaffold.of(ctx).showSnackBar(SnackBar(
           content: Text(message),
@@ -65,9 +80,9 @@ class _AuthScreenState extends State<AuthScreen> {
       });
     } catch (error) {
       print(error);
-      setState(() {
-        _isLoading = false;
-      });
+      // setState(() {
+      //   _isLoading = false;
+      // });
     }
   }
 

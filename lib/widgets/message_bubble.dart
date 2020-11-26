@@ -4,8 +4,9 @@ class MessageBubble extends StatelessWidget {
   final String userName;
   final String message;
   final bool isOwnText;
+  final String imageUrl;
 
-  const MessageBubble({Key key, this.message, this.isOwnText, this.userName})
+  const MessageBubble({Key key, this.message, this.isOwnText, this.userName, this.imageUrl})
       : super(key: key);
 
   @override
@@ -21,15 +22,23 @@ class MessageBubble extends StatelessWidget {
             color: isOwnText ? Colors.grey : Colors.purple,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Column(
+          child: Row(
             children: [
-              Text(
-                userName,
-                style: TextStyle(fontSize: 10, color: Colors.grey.shade200),
+              CircleAvatar(
+                radius: 15,
+                backgroundImage: NetworkImage(imageUrl),
               ),
-              Text(
-                message,
-                style: TextStyle(fontSize: 17, color: Colors.white),
+              Column(
+                children: [
+                  Text(
+                    userName,
+                    style: TextStyle(fontSize: 10, color: Colors.grey.shade200),
+                  ),
+                  Text(
+                    message,
+                    style: TextStyle(fontSize: 17, color: Colors.white),
+                  ),
+                ],
               ),
             ],
           ),

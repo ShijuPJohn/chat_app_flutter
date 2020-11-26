@@ -30,7 +30,9 @@ class Messages extends StatelessWidget {
                   padding: EdgeInsets.all(10),
                   child: MessageBubble(
                       key: ValueKey(chatDocs[index].documentID),
+                      // imageUrl: chatDocs[index]['user_image_url'],
                       userName: chatDocs[index]['username'],
+                      imageUrl: chatDocs[index]['imageUrl'],
                       message: chatDocs[index]['text'].toString(),
                       isOwnText: chatDocs[index]['userId'] ==
                           futureSnapshot.data.uid)),

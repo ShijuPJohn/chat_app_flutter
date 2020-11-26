@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:chat_app_flutter/widgets/user_image_picker.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
@@ -17,14 +20,29 @@ class _AuthFormState extends State<AuthForm> {
   String _userEmail = '';
   String _userName = '';
   String _userPassword = '';
+  File _imageFile;
+
+  void setImageFile(File imageFile) {
+    _imageFile = imageFile;
+    print(_imageFile.toString());
+  }
 
   void _trySubmit() {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
+    if (!isLogin) {
+      if (_imageFile == null) {
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('You have to add an image'),
+          backgroundColor: Theme.of(context).errorColor,
+        ));
+        return;
+      }
+    }
     if (isValid) {
       _formKey.currentState.save();
       widget.authFunction(_userEmail.trim(), _userPassword.trim(),
-          _userName.trim(), isLogin, context);
+          _userName.trim(), isLogin, context, _imageFile);
     }
   }
 
@@ -45,25 +63,8 @@ class _AuthFormState extends State<AuthForm> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (!isLogin)
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                      ),
-                      SizedBox(width: 20),
-                      FlatButton.icon(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.image,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          label: Text(
-                            'Select an image',
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          )),
-                    ],
+                  UserImagePicker(
+                    setImageFileCallback: setImageFile,
                   ),
                 TextFormField(
                   key: ValueKey('email'),
